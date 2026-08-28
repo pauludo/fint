@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useFinance, CURRENCIES } from '../../context/FinanceContext';
+import { useFinance, CURRENCIES, COUNTRY_MAP, getCountryForCurrency, getCountriesByRegion } from '../../context/FinanceContext';
 import { api } from '../../services/api';
 import Modal from '../common/Modal';
 import {
@@ -30,6 +30,16 @@ export default function SettingsView() {
     refreshAllData,
     formatCurrency
   } = useFinance();
+
+  // Derive country from current display currency
+  const selectedCountry = getCountryForCurrency(selectedCurrency);
+  const countriesByRegion = getCountriesByRegion();
+  const detectedCurrency = CURRENCIES[selectedCurrency];
+
+  const handleCountryChange = (countryCode) => {
+    const currency = COUNTRY_MAP[countryCode]?.currency || 'USD';
+    setSelectedCurrency(currency);
+  };
 
   const [nameInput, setNameInput] = useState(user?.name || '');
   const [apiKeyInput, setApiKeyInput] = useState('');
@@ -182,18 +192,29 @@ export default function SettingsView() {
             </div>
 
             <div>
-              <label className="block text-slate-500 dark:text-slate-400 mb-1">Base Display Currency</label>
+              <label className="block text-slate-500 dark:text-slate-400 mb-1">Country</label>
               <select
-                value={selectedCurrency}
-                onChange={(e) => setSelectedCurrency(e.target.value)}
+                value={selectedCountry}
+                onChange={(e) => handleCountryChange(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-950/70 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs focus:outline-none focus:border-amber-500"
               >
-                {Object.keys(CURRENCIES).map((code) => (
-                  <option key={code} value={code}>
-                    {code} - {CURRENCIES[code].name} ({CURRENCIES[code].symbol})
-                  </option>
+                {Object.entries(countriesByRegion).map(([region, countries]) => (
+                  <optgroup key={region} label={`── ${region} ──`}>
+                    {countries.map(({ code, name, flag, currency }) => (
+                      <option key={code} value={code}>
+                        {flag} {name} ({CURRENCIES[currency]?.symbol})
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
+              {/* Auto-detected currency badge */}
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">Display currency:</span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] font-bold text-amber-400">
+                  {selectedCurrency} {detectedCurrency?.symbol} — {detectedCurrency?.name}
+                </span>
+              </div>
             </div>
           </div>
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useFinance, CURRENCIES } from '../../context/FinanceContext';
+import { useFinance, CURRENCIES, COUNTRY_MAP, getCountryForCurrency, getCountriesByRegion } from '../../context/FinanceContext';
 import {
   Sparkles,
   Plus,
@@ -24,6 +24,16 @@ export default function Navbar() {
     setIsQuickAddOpen,
     refreshAllData
   } = useFinance();
+
+  // Derive the currently-selected country from the active display currency
+  const selectedCountry = getCountryForCurrency(selectedCurrency);
+  const countriesByRegion = useMemo(() => getCountriesByRegion(), []);
+  const currSymbol = CURRENCIES[selectedCurrency]?.symbol || '$';
+
+  const handleCountryChange = (countryCode) => {
+    const currency = COUNTRY_MAP[countryCode]?.currency || 'USD';
+    setSelectedCurrency(currency);
+  };
 
   const handleResetDemo = async () => {
     if (window.confirm('Reset all demo accounts, transactions, and budgets back to default?')) {
@@ -60,19 +70,23 @@ export default function Navbar() {
 
       {/* Right Action Icons & Controls */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Currency Switcher */}
-        <div className="relative flex items-center">
-          <Globe className="w-4 h-4 text-slate-400 absolute left-2.5 pointer-events-none" />
+        {/* Country / Currency Switcher */}
+        <div className="relative flex items-center gap-1">
+          <Globe className="w-4 h-4 text-slate-400 absolute left-2.5 pointer-events-none z-10" />
           <select
-            value={selectedCurrency}
-            onChange={(e) => setSelectedCurrency(e.target.value)}
-            className="pl-8 pr-7 py-1.5 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-600 focus:outline-none focus:border-amber-500 appearance-none cursor-pointer"
-            title="Switch display currency"
+            value={selectedCountry}
+            onChange={(e) => handleCountryChange(e.target.value)}
+            className="pl-8 pr-8 py-1.5 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-600 focus:outline-none focus:border-amber-500 appearance-none cursor-pointer"
+            title="Switch display country / currency"
           >
-            {Object.keys(CURRENCIES).map((code) => (
-              <option key={code} value={code}>
-                {code} ({CURRENCIES[code].symbol})
-              </option>
+            {Object.entries(countriesByRegion).map(([region, countries]) => (
+              <optgroup key={region} label={`── ${region} ──`}>
+                {countries.map(({ code, name, flag, currency }) => (
+                  <option key={code} value={code}>
+                    {flag} {name} ({CURRENCIES[currency]?.symbol})
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
           <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 pointer-events-none" />

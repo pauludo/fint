@@ -1,4 +1,5 @@
-const API_BASE = 'https://fint-v13a.onrender.com/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 
 function getAuthHeaders() {
   const token = localStorage.getItem('fintrack_token');
