@@ -213,3 +213,95 @@
 .animate-fade-in {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ─────────────────────────────────────────────
+   Global Ambient Background — blobs + grid
+   Applied via App.jsx to every page in the app
+───────────────────────────────────────────── */
+
+/* Ambient gradient blobs */
+.app-blob {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.app-blob-amber {
+  width: 700px;
+  height: 700px;
+  top: -180px;
+  left: -120px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.13) 0%, transparent 70%);
+  filter: blur(80px);
+  animation: appBlobFloat1 12s ease-in-out infinite alternate;
+}
+
+.app-blob-indigo {
+  width: 600px;
+  height: 600px;
+  bottom: -150px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.11) 0%, transparent 70%);
+  filter: blur(80px);
+  animation: appBlobFloat2 10s ease-in-out infinite alternate;
+}
+
+.app-blob-emerald {
+  width: 400px;
+  height: 400px;
+  top: 45%;
+  left: 40%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+  filter: blur(100px);
+  animation: appBlobFloat3 14s ease-in-out infinite alternate;
+}
+
+@keyframes appBlobFloat1 {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  100% { transform: translate(30px, 40px) scale(1.06); }
+}
+@keyframes appBlobFloat2 {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  100% { transform: translate(-25px, -35px) scale(1.08); }
+}
+@keyframes appBlobFloat3 {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  100% { transform: translate(20px, -25px) scale(1.05); }
+}
+
+/* Grid dot overlay */
+.app-grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 45%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 45%, black 20%, transparent 100%);
+}
+
+/* Light mode: dial down blobs and invert grid lines */
+.light .app-blob-amber {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.07) 0%, transparent 70%);
+}
+.light .app-blob-indigo {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+}
+.light .app-blob-emerald {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+}
+.light .app-grid-overlay {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .app-blob { animation: none !important; }
+}

@@ -34,11 +34,18 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-slate-950 font-black shadow-glow animate-pulse">
-          FT
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white space-y-4 relative overflow-hidden">
+        {/* Ambient blobs */}
+        <div className="app-blob app-blob-amber" />
+        <div className="app-blob app-blob-indigo" />
+        {/* Grid overlay */}
+        <div className="app-grid-overlay" />
+        <div className="relative z-10 flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-slate-950 font-black shadow-glow animate-pulse">
+            FT
+          </div>
+          <p className="text-xs text-slate-400 font-medium tracking-wide">Loading FinTrack AI...</p>
         </div>
-        <p className="text-xs text-slate-400 font-medium tracking-wide">Loading FinTrack AI...</p>
       </div>
     );
   }
@@ -85,12 +92,19 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500 selection:text-slate-950 relative overflow-x-hidden">
+
+      {/* ── Global ambient background ── */}
+      <div className="app-blob app-blob-amber" />
+      <div className="app-blob app-blob-indigo" />
+      <div className="app-blob app-blob-emerald" />
+      <div className="app-grid-overlay" />
+
       {/* Top Navigation */}
       <Navbar />
 
       {/* Main Layout Body */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative z-10">
         {/* Desktop Sidebar */}
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
