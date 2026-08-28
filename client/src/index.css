@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0F172A;
+    --bg-card: #1E293B;
+    --bg-card-hover: #273549;
+    --border-color: #334155;
+    --text-primary: #F8FAFC;
+    --text-muted: #94A3B8;
+    --color-accent: #F59E0B;
+  }
+
+  html.light {
+    --bg-primary: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F8FAFC;
+    --border-color: #E2E8F0;
+    --text-primary: #0F172A;
+    --text-muted: #475569;
+    --color-accent: #D97706;
+  }
+
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Accessible focus indicators */
+  *:focus-visible {
+    outline: 2px solid #F59E0B;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* ── Glass Card ── */
+  .glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .light .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08);
+  }
+
+  /* ── Glass Input ── */
+  .glass-input {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid #334155;
+    color: #F8FAFC;
+    transition: all 0.2s ease;
+  }
+
+  .light .glass-input {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #0F172A;
+  }
+
+  .glass-input::placeholder { color: #64748B; }
+  .light .glass-input::placeholder { color: #94A3B8; }
+
+  .glass-input:focus {
+    border-color: #F59E0B;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+  }
+
+  /* ── Badges ── */
+  .badge-emerald { @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20; }
+  .badge-amber   { @apply bg-amber-500/10 text-amber-400 border border-amber-500/20; }
+  .badge-rose    { @apply bg-rose-500/10 text-rose-400 border border-rose-500/20; }
+  .badge-purple  { @apply bg-purple-500/10 text-purple-400 border border-purple-500/20; }
+  .badge-blue    { @apply bg-blue-500/10 text-blue-400 border border-blue-500/20; }
+
+  /* ─── LIGHT MODE GLOBAL OVERRIDES ─────────────────────────────── */
+
+  /* Navbar / Sidebar shell */
+  .light header.glass-card,
+  .light aside {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-color: #E2E8F0 !important;
+  }
+
+  /* Hard-coded dark backgrounds → light equivalents */
+  .light .bg-slate-950,
+  .light [class*='bg-slate-950\/'] {
+    background-color: #F8FAFC !important;
+  }
+  .light .bg-slate-900,
+  .light [class*='bg-slate-900\/'] {
+    background-color: #F1F5F9 !important;
+  }
+
+  /* Hard-coded text-white → dark text in light mode */
+  .light .text-white { color: #0F172A !important; }
+  .light .text-slate-100 { color: #0F172A !important; }
+  .light .text-slate-200 { color: #1E293B !important; }
+  .light .text-slate-300 { color: #334155 !important; }
+  .light .text-slate-400 { color: #64748B !important; }
+  .light .text-slate-500 { color: #94A3B8 !important; }
+
+  /* Table chrome */
+  .light thead {
+    background-color: #F1F5F9 !important;
+  }
+  .light thead th,
+  .light thead button {
+    color: #475569 !important;
+  }
+  .light [class*='divide-slate-8'] > :not([hidden]) ~ :not([hidden]) {
+    border-color: #E2E8F0 !important;
+  }
+  .light .hover\:bg-slate-900\/60:hover {
+    background-color: #F1F5F9 !important;
+  }
+  .light .bg-amber-500\/5 {
+    background-color: #FFFBEB !important;
+  }
+
+  /* Borders */
+  .light [class*='border-slate-8'],
+  .light [class*='border-slate-7'] {
+    border-color: #E2E8F0 !important;
+  }
+
+  /* Gradient hero metric cards */
+  .light [class*='from-slate-9'],
+  .light [class*='to-slate-9'],
+  .light [class*='via-slate-9'] {
+    --tw-gradient-from: #FFFFFF !important;
+    --tw-gradient-to: #F8FAFC !important;
+    --tw-gradient-via: #F8FAFC !important;
+  }
+
+  /* AI insights gradient strip */
+  .light [class*='from-purple-950'],
+  .light [class*='to-indigo-950'],
+  .light [class*='via-slate-900'] {
+    --tw-gradient-from: #F5F3FF !important;
+    --tw-gradient-via: #FFFFFF !important;
+    --tw-gradient-to: #EEF2FF !important;
+  }
+
+  /* AI text inside purple strips */
+  .light .text-purple-200\/70,
+  .light .text-purple-200 { color: #6D28D9 !important; }
+
+  /* Sidebar AI banner */
+  .light [class*='from-purple-950\/'],
+  .light [class*='to-indigo-950\/'] {
+    --tw-gradient-from: #F5F3FF !important;
+    --tw-gradient-to: #EEF2FF !important;
+  }
+  .light [class*='border-purple-800\/'] { border-color: rgba(167, 139, 250, 0.35) !important; }
+
+  /* Subscriptions/upcoming bills rows */
+  .light .bg-slate-900\/60 {
+    background-color: #F8FAFC !important;
+  }
+
+  /* Inputs / selects in forms */
+  .light input,
+  .light select,
+  .light textarea {
+    background-color: #FFFFFF !important;
+    border-color: #CBD5E1 !important;
+    color: #0F172A !important;
+  }
+  .light input::placeholder,
+  .light textarea::placeholder {
+    color: #94A3B8 !important;
+  }
+
+  /* Recharts axes */
+  .light .recharts-cartesian-axis-tick text {
+    fill: #475569 !important;
+  }
+}
+
+/* Custom Webkit Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
