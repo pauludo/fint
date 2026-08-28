@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = 'https://fint-v13a.onrender.com/api';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('fintrack_token');
@@ -261,4 +261,4 @@ export const api = {
       headers: getAuthHeaders(),
       body: JSON.stringify(data)
     }).then(handleResponse)
-};
+}
