@@ -14,6 +14,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.4",
     "vite": "^8.2.2"
   }
 }

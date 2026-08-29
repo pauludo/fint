@@ -1,64 +1,41 @@
-import sqlite3 from 'sqlite3';
+import { createClient } from '@libsql/client';
+import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = path.resolve(__dirname, '../../data/fintrack.sqlite');
-const dataDir = path.dirname(dbPath);
+// Uses cloud database in production, falls back to local file in development
+const isProd = process.env.NODE_ENV === 'production' || !!process.env.TURSO_DATABASE_URL;
 
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-// Enable verbose mode in development
-const sqlite = sqlite3.verbose();
-const db = new sqlite.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Failed to open database:', err.message);
-  } else {
-    console.log('Connected to SQLite database at', dbPath);
-  }
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL || 'file:local.db',
+  authToken: process.env.TURSO_AUTH_TOKEN
 });
 
-// Promise-based helpers
+// SQLite Promise-compatible helpers
 export const query = {
-  run(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      db.run(sql, params, function (err) {
-        if (err) return reject(err);
-        resolve({ lastID: this.lastID, changes: this.changes });
-      });
-    });
+  async run(sql, params = []) {
+    const result = await client.execute({ sql, args: params });
+    return { lastID: Number(result.lastInsertRowid), changes: result.rowsAffected };
   },
 
-  get(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      db.get(sql, params, (err, row) => {
-        if (err) return reject(err);
-        resolve(row);
-      });
-    });
+  async get(sql, params = []) {
+    const result = await client.execute({ sql, args: params });
+    return result.rows[0] || null;
   },
 
-  all(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      db.all(sql, params, (err, rows) => {
-        if (err) return reject(err);
-        resolve(rows || []);
-      });
-    });
+  async all(sql, params = []) {
+    const result = await client.execute({ sql, args: params });
+    return result.rows || [];
   },
 
-  exec(sql) {
-    return new Promise((resolve, reject) => {
-      db.exec(sql, (err) => {
-        if (err) return reject(err);
-        resolve();
-      });
-    });
+  async exec(sql) {
+    await client.executeMultiple(sql);
   }
 };
 
@@ -69,4 +46,4 @@ export async function initDb() {
   console.log('Database schema successfully initialized.');
 }
 
-export default db;
+export default client;
